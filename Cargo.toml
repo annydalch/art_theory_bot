@@ -1,0 +1,17 @@
+[package]
+name = "art_theory_bot"
+version = "0.1.0"
+authors = ["Arthur Goldman <arthur@goldman-tribe.org>"]
+
+[lib]
+name = "art_theory_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "art_theory_bin"
+path = "src/lib.rs"
+
+[dependencies]
+url = "1.4.0"
+oauthcli = "1.0.6"
+hyper = "0.10.10"
