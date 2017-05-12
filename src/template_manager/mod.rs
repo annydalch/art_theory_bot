@@ -77,7 +77,7 @@ impl Template_manager {
                     new_bytes.push(*adj_byte);
                 }
             } else if *byte == ADVERB_FORMAT_CHAR {
-                for adv_byte in self.format_phrase(self.get_adjective_phrase(&mut rng), &mut rng).iter() {
+                for adv_byte in self.format_phrase(self.get_adverb_phrase(&mut rng), &mut rng).iter() {
                     new_bytes.push(*adv_byte);
                 }
             } else {
