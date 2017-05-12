@@ -40,7 +40,7 @@ impl TemplateManager {
     fn get_noun_phrase(&self, mut rng: &mut ThreadRng) -> Vec<u8> {
         // we juggle Vec<u8>s around here because they're easy to iterate through and replace bytes
         // this method and its friends get_adjective_phrase and get_adverb_phrase choose a random phrase from the Vec<Phrase>s
-        if let Some(ref noun_phrase) = rng.choose(&self.nouns) {
+        if let Some(noun_phrase) = rng.choose(&self.nouns) {
             noun_phrase.text.clone().into_bytes()
         } else {
             panic!("couldn't get a noun phrase")
@@ -48,7 +48,7 @@ impl TemplateManager {
     }
 
     fn get_adjective_phrase(&self, mut rng: &mut ThreadRng) -> Vec<u8> {
-        if let Some(ref adj_phrase) = rng.choose(&self.adjectives) {
+        if let Some(adj_phrase) = rng.choose(&self.adjectives) {
             adj_phrase.text.clone().into_bytes()
         } else {
             panic!("couldn't get an adjective phrase")
@@ -56,7 +56,7 @@ impl TemplateManager {
     }
 
     fn get_adverb_phrase(&self, mut rng: &mut ThreadRng) -> Vec<u8> {
-        if let Some(ref adv_phrase) = rng.choose(&self.adverbs) {
+        if let Some(adv_phrase) = rng.choose(&self.adverbs) {
             adv_phrase.text.clone().into_bytes()
         } else {
             panic!("couldn't get an adjective phrase")
@@ -64,7 +64,7 @@ impl TemplateManager {
     }
 
     fn get_abstract_phrase(&self, mut rng: &mut ThreadRng) -> Vec<u8> {
-        if let Some(ref abstract_phrase) = rng.choose(&self.abstracts) {
+        if let Some(abstract_phrase) = rng.choose(&self.abstracts) {
             abstract_phrase.text.clone().into_bytes()
         } else {
             panic!("couldn't get an abstract phrase")
@@ -111,7 +111,7 @@ impl TemplateManager {
         // note: I can't figure out how to have the Template_handler own rng
         // because getting a random value mutates the rng
         // so instead it's owned by main() and these methods just pass refs to it back and forth
-        if let Some(ref template) = rng.choose(&self.templates) {
+        if let Some(template) = rng.choose(&self.templates) {
             String::from_utf8(self.format_phrase(template.text.clone().into_bytes(), &mut rng)).unwrap()
         } else {
             panic!("couldn't get a template")
