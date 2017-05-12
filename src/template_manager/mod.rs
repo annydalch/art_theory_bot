@@ -1,10 +1,7 @@
 extern crate rand;
 
-use std::io::BufReader;
-use std::io::prelude::*; // I'm honestly not sure what this is but all the examples I found online included it
-use std::fs::File;
 use std::path::Path;
-use rand::{Rng, thread_rng, ThreadRng};
+use rand::{Rng, ThreadRng};
 
 const NOUN_FORMAT_CHAR: u8 = b'%';
 const ADJECTIVE_FORMAT_CHAR: u8 = b'#';
@@ -15,7 +12,7 @@ mod phrase;
 use self::phrase::Phrase;
 // Phrase is just a wrapper around a String with a method to load a Vec of them from a file
 
-pub struct Template_manager {
+pub struct TemplateManager {
     // this is a struct that handles all of the actual text generation
     // we use Vec<Phrase> so we can use Rng.choose()
     templates: Vec<Phrase>,
@@ -26,12 +23,12 @@ pub struct Template_manager {
 }
 
 
-impl Template_manager {
-    pub fn new<P0, P1, P2, P3, P4>(template_path: P0, noun_path: P1, adj_path: P2, adv_path: P3, abstract_path: P4) -> Template_manager
+impl TemplateManager {
+    pub fn new<P0, P1, P2, P3, P4>(template_path: P0, noun_path: P1, adj_path: P2, adv_path: P3, abstract_path: P4) -> TemplateManager
         where P0: AsRef<Path>, P1: AsRef<Path>, P2: AsRef<Path>, P3: AsRef<Path>, P4: AsRef<Path>
     // given paths to all of the lists of stuff, create a new Template_manager
     {
-        Template_manager {
+        TemplateManager {
             templates: Phrase::load_from_file(template_path),
             nouns: Phrase::load_from_file(noun_path),
             adjectives: Phrase::load_from_file(adj_path),
@@ -78,25 +75,25 @@ impl Template_manager {
         // this method iterates through a Vec<u8> and replaces any of the FORMAT_CHARs with a phrase
         // it's recursive so that adjectives can be things like "%-driven"
         let mut new_bytes: Vec<u8> = Vec::new();
-        for byte in phrase.iter() {
+        for byte in &phrase {
             match *byte {
                 NOUN_FORMAT_CHAR => {
-                    for noun_byte in self.format_phrase(self.get_noun_phrase(&mut rng), &mut rng).iter() {
+                    for noun_byte in &self.format_phrase(self.get_noun_phrase(&mut rng), &mut rng) {
                         new_bytes.push(*noun_byte);
                     }
                 },
                 ADJECTIVE_FORMAT_CHAR => {
-                    for adj_byte in self.format_phrase(self.get_adjective_phrase(&mut rng), &mut rng).iter() {
+                    for adj_byte in &self.format_phrase(self.get_adjective_phrase(&mut rng), &mut rng) {
                         new_bytes.push(*adj_byte);
                     }
                 },
                 ADVERB_FORMAT_CHAR => {
-                    for adv_byte in self.format_phrase(self.get_adverb_phrase(&mut rng), &mut rng).iter() {
+                    for adv_byte in &self.format_phrase(self.get_adverb_phrase(&mut rng), &mut rng) {
                         new_bytes.push(*adv_byte);
                     }
                 },
                 ABSTRACT_FORMAT_CHAR => {
-                    for abstract_byte in self.format_phrase(self.get_abstract_phrase(&mut rng), &mut rng).iter() {
+                    for abstract_byte in &self.format_phrase(self.get_abstract_phrase(&mut rng), &mut rng) {
                         new_bytes.push(*abstract_byte);
                     }
                 },

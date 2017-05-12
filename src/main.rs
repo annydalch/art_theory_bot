@@ -1,10 +1,6 @@
 extern crate rand;
 
-use std::io::BufReader;
-use std::io::prelude::*;
-use std::fs::File;
-use std::path::Path;
-use rand::{Rng, thread_rng, ThreadRng};
+use rand::{thread_rng, ThreadRng};
 
 const NOUNS_FILENAME: &str = "resources/nouns.txt";
 const TEMPLATE_FILENAME: &str = "resources/templates.txt";
@@ -13,10 +9,10 @@ const ADVERBS_FILENAME: &str = "resources/adverbs.txt";
 const ABSTRACTS_FILENAME: &str = "resources/abstracts.txt";
 
 mod template_manager;
-use template_manager::Template_manager;
+use template_manager::TemplateManager;
 
 fn main() {
-    let manager: Template_manager = Template_manager::new(
+    let manager: TemplateManager = TemplateManager::new(
         TEMPLATE_FILENAME,
         NOUNS_FILENAME,
         ADJECTIVES_FILENAME,
