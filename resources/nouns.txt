@@ -15,3 +15,5 @@ figure
 ground
 rebellion
 giant dick
+# flaw
+hemidemisemiquaver
