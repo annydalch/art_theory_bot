@@ -1,6 +1,6 @@
 This % is actually a # commentary on the state of the art of %s.
 It may look like a %, but it's actually a # %.
-This % @ uses the medium to its advantage to make the viewer feel %.
+This % @ uses the medium to its advantage to make the viewer feel #.
 This % plays on a # cultural knowledge of % to get its point across @.
 This % is a @ # example of %, if not a @ # one.
 The pacing of this % reflects the emotional state of its %s, bringing the % on a journey through # reactions.

@@ -9,6 +9,7 @@ use rand::{Rng, thread_rng, ThreadRng};
 const NOUN_FORMAT_CHAR: u8 = b'%';
 const ADJECTIVE_FORMAT_CHAR: u8 = b'#';
 const ADVERB_FORMAT_CHAR: u8 = b'@';
+const ABSTRACT_FORMAT_CHAR: u8 = b'$';
 
 mod phrase;
 use self::phrase::Phrase;
@@ -21,6 +22,7 @@ pub struct Template_manager {
     nouns: Vec<Phrase>,
     adjectives: Vec<Phrase>,
     adverbs: Vec<Phrase>,
+    abstracts: Vec<Phrase>,
 }
 
 
@@ -60,6 +62,14 @@ impl Template_manager {
             adv_phrase.text.clone().into_bytes()
         } else {
             panic!("couldn't get an adjective phrase")
+        }
+    }
+
+    fn get_abstract_phrase(&self, mut rng: &mut ThreadRng) -> Vec<u8> {
+        if let Some(ref abstract_phrase) = rng.choose(&self.abstracts) {
+            abstract_phrase.text.clone().into_bytes()
+        } else {
+            panic!("couldn't get an abstract phrase")
         }
     }
 

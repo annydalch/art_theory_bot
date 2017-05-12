@@ -36,3 +36,7 @@ conformist
 eye-catching
 incongruent
 %-driven
+nonconventional
+indie
+nicotine-free
+abstract
