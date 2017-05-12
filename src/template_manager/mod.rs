@@ -27,15 +27,16 @@ pub struct Template_manager {
 
 
 impl Template_manager {
-    pub fn new<P0, P1, P2, P3>(template_path: P0, noun_path: P1, adj_path: P2, adv_path: P3) -> Template_manager
-        where P0: AsRef<Path>, P1: AsRef<Path>, P2: AsRef<Path>, P3: AsRef<Path>
-        // given paths to all of the lists of stuff, create a new Template_manager
+    pub fn new<P0, P1, P2, P3, P4>(template_path: P0, noun_path: P1, adj_path: P2, adv_path: P3, abstract_path: P4) -> Template_manager
+        where P0: AsRef<Path>, P1: AsRef<Path>, P2: AsRef<Path>, P3: AsRef<Path>, P4: AsRef<Path>
+    // given paths to all of the lists of stuff, create a new Template_manager
     {
         Template_manager {
             templates: Phrase::load_from_file(template_path),
             nouns: Phrase::load_from_file(noun_path),
             adjectives: Phrase::load_from_file(adj_path),
             adverbs: Phrase::load_from_file(adv_path),
+            abstracts: Phrase::load_from_file(abstract_path),
         }
     }
 
@@ -78,20 +79,30 @@ impl Template_manager {
         // it's recursive so that adjectives can be things like "%-driven"
         let mut new_bytes: Vec<u8> = Vec::new();
         for byte in phrase.iter() {
-            if *byte == NOUN_FORMAT_CHAR {
-                for noun_byte in self.format_phrase(self.get_noun_phrase(&mut rng), &mut rng).iter() {
-                    new_bytes.push(*noun_byte);
+            match *byte {
+                NOUN_FORMAT_CHAR => {
+                    for noun_byte in self.format_phrase(self.get_noun_phrase(&mut rng), &mut rng).iter() {
+                        new_bytes.push(*noun_byte);
+                    }
+                },
+                ADJECTIVE_FORMAT_CHAR => {
+                    for adj_byte in self.format_phrase(self.get_adjective_phrase(&mut rng), &mut rng).iter() {
+                        new_bytes.push(*adj_byte);
+                    }
+                },
+                ADVERB_FORMAT_CHAR => {
+                    for adv_byte in self.format_phrase(self.get_adverb_phrase(&mut rng), &mut rng).iter() {
+                        new_bytes.push(*adv_byte);
+                    }
+                },
+                ABSTRACT_FORMAT_CHAR => {
+                    for abstract_byte in self.format_phrase(self.get_abstract_phrase(&mut rng), &mut rng).iter() {
+                        new_bytes.push(*abstract_byte);
+                    }
+                },
+                _ => {
+                    new_bytes.push(*byte);
                 }
-            } else if *byte == ADJECTIVE_FORMAT_CHAR {
-                for adj_byte in self.format_phrase(self.get_adjective_phrase(&mut rng), &mut rng).iter() {
-                    new_bytes.push(*adj_byte);
-                }
-            } else if *byte == ADVERB_FORMAT_CHAR {
-                for adv_byte in self.format_phrase(self.get_adverb_phrase(&mut rng), &mut rng).iter() {
-                    new_bytes.push(*adv_byte);
-                }
-            } else {
-                new_bytes.push(*byte);
             }
         }
         new_bytes
