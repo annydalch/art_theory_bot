@@ -1,20 +1,25 @@
 extern crate rand;
 
-use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
-use rand::distributions::Range;
+use std::fs::File;
+use std::path::Path;
+use rand::{Rng, thread_rng, ThreadRng};
 
-const FILENAME: &str = "../../resources/big_list_of_crap.txt";
-const FORMAT_CHAR: u8 = b'%';
+const NOUNS_FILENAME: &str = "resources/nouns.txt";
+const TEMPLATE_FILENAME: &str = "resources/templates.txt";
+
+mod template;
+use template::Template;
 
 fn main() {
-    let nouns: Vec<String> = read_from_file;
-    let a_template: Template = Template { text: "I love %." };
-    println!("{}", a_template.format(&nouns));
+    let nouns: Vec<String> = read_nouns_from_file(NOUNS_FILENAME);
+    let templates: Vec<Template> = Template::load_from_file(TEMPLATE_FILENAME);
+    let mut rng = thread_rng();
+    println!("{}", choose_and_format(&templates, &nouns, &mut rng));
 }
 
-fn read_from_file<P>(filename: P) -> Vec<String>
+fn read_nouns_from_file<P>(filename: P) -> Vec<String>
     where P: AsRef<Path>
 {
     let file = File::open(filename).expect("no such file");
@@ -22,23 +27,10 @@ fn read_from_file<P>(filename: P) -> Vec<String>
     buf.lines().map(|l| l.expect("couldn't parse line")).collect()
 }
 
-struct Template {
-    text: &'static str,
-}
-
-impl Template {
-    fn format(&self, nouns: &Vec<String>) -> String {
-        let mut new_bytes: Vec<u8> = Vec::new();
-        for byte in self.text.bytes() {
-            if byte == FORMAT_CHAR {
-                let ref noun_phrase = nouns[0];
-                for noun_byte in noun_phrase.bytes() {
-                    new_bytes.push(noun_byte);
-                }
-            } else {
-                new_bytes.push(byte);
-            }
-        }
-        return String::from_utf8(new_bytes).unwrap();
+fn choose_and_format(templates: &Vec<Template>, nouns: &Vec<String>, mut rng: &mut ThreadRng) -> String {
+    if let Some(ref template) = rng.choose(&templates) {
+        template.format(&nouns, &mut rng)
+    } else {
+        panic!("couldn't pick a template")
     }
 }
