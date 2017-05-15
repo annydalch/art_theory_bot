@@ -19,6 +19,6 @@ pub fn new_tweet<T>(text: T) -> Result<(), twitter::Error>
     twitter::update_status(
         &consumer_token,
         &access_token,
-        &text.as_ref()
+        text.as_ref()
     )
 }

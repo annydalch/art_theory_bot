@@ -2,6 +2,7 @@ extern crate rand;
 
 use std::path::Path;
 use rand::{Rng, ThreadRng};
+use std::io::Result;
 
 const NOUN_FORMAT_CHAR: u8 = b'%';
 const ADJECTIVE_FORMAT_CHAR: u8 = b'#';
@@ -28,17 +29,18 @@ fn and_then_phrase_bytes(phrase: &Phrase) -> Option<Vec<u8>> {
 
 
 impl TemplateManager {
-    pub fn new<P0, P1, P2, P3, P4>(template_path: P0, noun_path: P1, adj_path: P2, adv_path: P3, abstract_path: P4) -> TemplateManager
+    pub fn new<P0, P1, P2, P3, P4>(template_path: P0, noun_path: P1, adj_path: P2, adv_path: P3, abstract_path: P4) -> Result<TemplateManager>
         where P0: AsRef<Path>, P1: AsRef<Path>, P2: AsRef<Path>, P3: AsRef<Path>, P4: AsRef<Path>
     // given paths to all of the lists of stuff, create a new Template_manager
     {
-        TemplateManager {
-            templates: Phrase::load_from_file(template_path),
-            nouns: Phrase::load_from_file(noun_path),
-            adjectives: Phrase::load_from_file(adj_path),
-            adverbs: Phrase::load_from_file(adv_path),
-            abstracts: Phrase::load_from_file(abstract_path),
-        }
+        let tm = TemplateManager {
+            templates: Phrase::load_from_file(template_path)?,
+            nouns: Phrase::load_from_file(noun_path)?,
+            adjectives: Phrase::load_from_file(adj_path)?,
+            adverbs: Phrase::load_from_file(adv_path)?,
+            abstracts: Phrase::load_from_file(abstract_path)?,
+        };
+        Ok(tm)
     }
 
     fn get_noun_phrase(&self, mut rng: &mut ThreadRng) -> Option<Vec<u8>> {
@@ -142,10 +144,10 @@ impl TemplateManager {
             None => {return None;},
         };
         match String::from_utf8(template) {
-            Ok(text) => {return Some(text);},
+            Ok(text) => Some(text),
             Err(err) => {
                 println!("Failed to make string from template with error {}", err);
-                return None;
+                None
             },
         }
     }
