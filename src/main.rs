@@ -11,6 +11,9 @@ const ABSTRACTS_FILENAME: &str = "resources/abstracts.txt";
 mod template_manager;
 use template_manager::TemplateManager;
 
+mod tweet_manager;
+use tweet_manager::new_tweet;
+
 fn main() {
     let manager: TemplateManager = TemplateManager::new(
         TEMPLATE_FILENAME,
@@ -20,5 +23,17 @@ fn main() {
         ABSTRACTS_FILENAME
     );
     let mut rng: ThreadRng = thread_rng();
-    println!("{}", manager.make_formatted_quote(&mut rng));
+    match manager.make_formatted_quote(&mut rng) {
+        Some(quote) => {
+            if let Err(err) = new_tweet(&quote) {
+                println!("Failed to tweet with err: {}", err.description());
+                println!("The tweet was '{}'", quote);
+            } else {
+                println!("Tweeted '{}'", quote)
+            }
+        },
+        None => {
+            println!("Couldn't generate a tweet");
+        },
+    }
 }
