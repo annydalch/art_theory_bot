@@ -1,4 +1,8 @@
 use std::io::BufReader;
+
+// i'm not sure what std::io::prelude is and the docs aren't helpful
+// but it was in all the read from file examples
+// and rustc doesn't warn about unused imports
 use std::io::prelude::*;
 use std::fs::File;
 use std::path::Path;

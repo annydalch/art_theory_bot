@@ -4,6 +4,7 @@ use std::path::Path;
 use rand::{Rng, ThreadRng};
 use std::io::Result;
 
+// any instance of these characters in a phrase will be replaced with the associated type of phrase
 const NOUN_FORMAT_CHAR: u8 = b'%';
 const ADJECTIVE_FORMAT_CHAR: u8 = b'#';
 const ADVERB_FORMAT_CHAR: u8 = b'@';
@@ -24,6 +25,7 @@ pub struct TemplateManager {
 }
 
 fn and_then_phrase_bytes(phrase: &Phrase) -> Option<Vec<u8>> {
+    // this function is called by all of the get_*_phrase methods
     Some(phrase.text.clone().into_bytes())
 }
 
@@ -32,6 +34,8 @@ impl TemplateManager {
     pub fn new<P0, P1, P2, P3, P4>(template_path: P0, noun_path: P1, adj_path: P2, adv_path: P3, abstract_path: P4) -> Result<TemplateManager>
         where P0: AsRef<Path>, P1: AsRef<Path>, P2: AsRef<Path>, P3: AsRef<Path>, P4: AsRef<Path>
     // given paths to all of the lists of stuff, create a new Template_manager
+    // this is a really ugly function definition
+    // because of all of these Ps
     {
         let tm = TemplateManager {
             templates: Phrase::load_from_file(template_path)?,
@@ -46,6 +50,9 @@ impl TemplateManager {
     fn get_noun_phrase(&self, mut rng: &mut ThreadRng) -> Option<Vec<u8>> {
         // we juggle Vec<u8>s around here because they're easy to iterate through and replace bytes
         // this method and its friends get_adjective_phrase and get_adverb_phrase choose a random phrase from the Vec<Phrase>s
+        // i bet if i understood rust macros this would be way easier
+        // and these four methods would just be one macro
+        // but i don't
         rng.choose(&self.nouns).and_then( |p| and_then_phrase_bytes(p) )
     }
 
@@ -70,6 +77,9 @@ impl TemplateManager {
         for byte in &phrase {
             match *byte {
                 NOUN_FORMAT_CHAR => {
+                    // these feel like they could also be a macro
+                    // but again, i'm really not sure how macros work in rust
+                    // and this project didn't seem big enough to learn
                     let noun = match self.get_noun_phrase(&mut rng) {
                         Some(n) => n,
                         None => {return None;},
