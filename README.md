@@ -13,5 +13,5 @@ The enterprising reader who wants to operate such a bot themself will require, o
 The build target `final` uses [`main.rs`](https://github.com/annydalch/art_theory_bot/blob/master/src/main.rs "main.rs"), and for every time it is called it will send a Tweet. I use [cron](https://en.wikipedia.org/wiki/Cron "Cron") to run it every 4 hours. If you want to tweet, you'll need to create a file called `src/tweet_manager/secret.rs` that defines 4 `Into<Cow<str>>`s: `CONSUMER_KEY`, `CONSUMER_SECRET`, `ACCESS_KEY`, `ACCESS_SECRET`. For me they're `pub const &str`s.
 I recommend building this one with `cargo build --release --bin final`.
 
-If, alternatively, you just want to generate the tweets and not send them, you can use the `just-generate` build target, which will just generate the text and write it to stdout. Building that probably won't require `secret.rs`, but who knows?
+If, alternatively, you just want to generate the tweets and not send them, you can use the `just-generate` build target. `just-generate` builds [`generator.rs`](https://github.com/annydalch/art_theory_bot/blob/master/src/generator.rs "generator.rs"), which will just generate the text and write it to stdout. Building that probably won't require `secret.rs`, but who knows?
 I recommend running this one with `cargo run --bin just-generate`.
